@@ -1,0 +1,6 @@
+/*[Bb]uild*/
+
+.idea
+.vscode
+
+.cache
