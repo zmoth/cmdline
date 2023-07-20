@@ -12,7 +12,9 @@
 
 #pragma once
 
+#ifdef __GNUC__
 #include <cxxabi.h>
+#endif
 
 #include <algorithm>
 #include <cstdlib>
@@ -107,11 +109,19 @@ Target lexical_cast(const Source &arg)
 
 static inline std::string demangle(const std::string &name)
 {
+#ifdef _MSC_VER
+    return name;  // 为MSVC编译器时直接返回name
+#elif defined(__GNUC__)
+    // 为gcc编译器时还调用原来的代码
     int status = 0;
     char *p = abi::__cxa_demangle(name.c_str(), nullptr, nullptr, &status);
     std::string ret(p);
     free(p);
     return ret;
+#else
+// 其他不支持的编译器需要自己实现这个方法
+#error unexpected c complier (msc/gcc), Need to implement this method for demangle
+#endif
 }
 
 template <class T>
