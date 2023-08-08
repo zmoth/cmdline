@@ -1,14 +1,12 @@
-///
-///@file cmdline.h
-///@author Hideyuki Tanaka, moth (QianMoth@qq.com)
-///@brief 只有单个头文件的C++命令行工具
-///@version 1.0.1
-///@date 2023-07-08
-///@details
+/// @file cmdline.h
+/// @author Hideyuki Tanaka, moth (QianMoth@qq.com)
+/// @brief 只有单个头文件的C++命令行工具
+/// @version 1.0.1
+/// @date 2023-07-08
+/// @details
 /// This is an enhancement to [the original project](https://github.com/tanakh/cmdline)
 ///
-///@copyright Copyright (c) 2009, Hideyuki Tanaka
-///
+/// @copyright Copyright (c) 2009, Hideyuki Tanaka
 
 #pragma once
 
@@ -82,19 +80,19 @@ class lexical_cast_t<Target, std::string, false>
     }
 };
 
-///@brief 是否相等
+/// @brief 是否相等
 ///
-///@tparam T1
-///@tparam T2
+/// @tparam T1
+/// @tparam T2
 template <typename T1, typename T2>
 struct is_same
 {
     static const bool value = false;
 };
 
-///@brief 是否相等
+/// @brief 是否相等
 ///
-///@tparam T
+/// @tparam T
 template <typename T>
 struct is_same<T, T>
 {
@@ -149,7 +147,7 @@ inline std::string readable_typename<std::string>()
 // ==================================================================
 // ==================================================================
 
-///@brief 自定义错误类型 cli错误
+/// @brief 自定义错误类型 cli错误
 class cmdline_error : public std::exception
 {
   public:
@@ -206,6 +204,8 @@ struct oneof_reader
   private:
     std::vector<T> alt;
 };
+
+#pragma region /* oneof_reader */
 
 template <class T>
 oneof_reader<T> oneof(T a1)
@@ -332,13 +332,14 @@ oneof_reader<T> oneof(T a1, T a2, T a3, T a4, T a5, T a6, T a7, T a8, T a9, T a1
     return ret;
 }
 
+#pragma endregion /* oneof_reader */
+
 // ==================================================================
 // ==================================================================
 // ==================================================================
 // ==================================================================
 
-///@brief
-///
+/// @brief 命令行解析器
 class parser
 {
   public:
@@ -352,34 +353,34 @@ class parser
         }
     }
 
-    ///@brief 新建无参选项并添加
+    /// @brief 新建无参选项并添加
     ///
-    ///@param name 选项名
-    ///@param short_name 选项名缩写
-    ///@param desc 选项描述
-    ///@code
+    /// @param name 选项名
+    /// @param short_name 选项名缩写
+    /// @param desc 选项描述
+    /// @code
     /// ```cpp
     /// parser.add("help", 'h', "print this message");
     /// ```
-    ///@endcode
+    /// @endcode
     void add(const std::string &name, char short_name = 0, const std::string &desc = "")
     {
         // 判断选项是否已经存在
-        if (options.count(name)) {
+        if (options.contains(name)) {
             throw cmdline_error("multiple definition: " + name);
         }
         options[name] = new option_without_value(name, short_name, desc);
         ordered.push_back(options[name]);
     }
 
-    ///@brief 添加选项
+    /// @brief 添加选项
     ///
-    ///@tparam T 选项参数类型
-    ///@param name 选项名
-    ///@param short_name 选项缩写
-    ///@param desc 选项描述
-    ///@param need 是否必须
-    ///@param def 默认值
+    /// @tparam T 选项参数类型
+    /// @param name 选项名
+    /// @param short_name 选项缩写
+    /// @param desc 选项描述
+    /// @param need 是否必须
+    /// @param def 默认值
     template <class T>
     void add(const std::string &name, char short_name = 0, const std::string &desc = "",
              bool need = true, const T def = T())
@@ -387,21 +388,21 @@ class parser
         add(name, short_name, desc, need, def, default_reader<T>());
     }
 
-    ///@brief 新建选项并添加
+    /// @brief 新建选项并添加
     ///
-    ///@tparam T 选项参数类型
-    ///@tparam F
-    ///@param name 选项名
-    ///@param short_name 选项缩写
-    ///@param desc 选项描述
-    ///@param need 是否必须
-    ///@param def 默认值
-    ///@param reader
+    /// @tparam T 选项参数类型
+    /// @tparam F
+    /// @param name 选项名
+    /// @param short_name 选项缩写
+    /// @param desc 选项描述
+    /// @param need 是否必须
+    /// @param def 默认值
+    /// @param reader
     template <class T, class F>
     void add(const std::string &name, char short_name = 0, const std::string &desc = "",
              bool need = true, const T def = T(), F reader = F())
     {
-        if (options.count(name)) {
+        if (options.contains(name)) {
             throw cmdline_error("multiple definition: " + name);
         }
         // 将选项添加到map中
@@ -410,39 +411,39 @@ class parser
         ordered.push_back(options[name]);
     }
 
-    ///@brief 在使用提示后面追加
+    /// @brief 在使用提示后面追加
     ///
-    ///@param f
+    /// @param f
     void footer(const std::string &f) { ftr = f; }
 
-    ///@brief 设置展示出来的可执行程序的名称
-    ///@details 如果不设置则展示完整的程序路径
+    /// @brief 设置展示出来的可执行程序的名称
+    /// @details 如果不设置则展示完整的程序路径
     ///
-    ///@param name
+    /// @param name
     void set_program_name(const std::string &name) { prog_name = name; }
 
-    ///@brief 判断是否存在某个选项
+    /// @brief 判断是否存在某个选项
     ///
-    ///@param name 选项名称
-    ///@return true 存在
-    ///@return false 不存在
+    /// @param name 选项名称
+    /// @return true 存在
+    /// @return false 不存在
     bool exist(const std::string &name) const
     {
-        if (options.count(name) == 0) {
+        if (!options.contains(name)) {
             throw cmdline_error("there is no flag: --" + name);
         }
         return options.find(name)->second->has_set();
     }
 
-    ///@brief 根据选项名称获取参数
+    /// @brief 根据选项名称获取参数
     ///
-    ///@tparam T
-    ///@param name 选项名称
-    ///@return const T&
+    /// @tparam T
+    /// @param name 选项名称
+    /// @return const T&
     template <class T>
     const T &get(const std::string &name) const
     {
-        if (options.count(name) == 0) {
+        if (!options.contains(name)) {
             throw cmdline_error("there is no flag: --" + name);
         }
         const option_with_value<T> *p =
@@ -453,16 +454,16 @@ class parser
         return p->get();
     }
 
-    ///@brief
+    /// @brief
     ///
-    ///@return const std::vector<std::string>&
+    /// @return const std::vector<std::string>&
     const std::vector<std::string> &rest() const { return others; }
 
-    ///@brief
+    /// @brief
     ///
-    ///@param arg
-    ///@return true
-    ///@return false
+    /// @param[in] arg
+    /// @return true
+    /// @return false
     bool parse(const std::string &arg)
     {
         std::vector<std::string> args;
@@ -508,11 +509,11 @@ class parser
         return parse(args);
     }
 
-    ///@brief 根据参数列表进行解析
+    /// @brief 根据参数列表进行解析
     ///
-    ///@param args 参数列表
-    ///@return true 解析正常
-    ///@return false 解析失败
+    /// @param args 参数列表
+    /// @return true 解析正常
+    /// @return false 解析失败
     bool parse(const std::vector<std::string> &args)
     {
         int argc = static_cast<int>(args.size());
@@ -525,12 +526,12 @@ class parser
         return parse(argc, argv.data());
     }
 
-    ///@brief 根据命令行输入的内容进行解析
+    /// @brief 根据命令行输入的内容进行解析
     ///
-    ///@param argc 参数个数
-    ///@param argv 参数内容
-    ///@return true 解析正常
-    ///@return false 解析失败
+    /// @param argc 参数个数
+    /// @param argv 参数内容
+    /// @return true 解析正常
+    /// @return false 解析失败
     bool parse(int argc, const char *const argv[])
     {
         // 清除错误
@@ -553,7 +554,7 @@ class parser
 
             char initial = option.second->short_name();
             if (initial) {
-                if (lookup.count(initial) > 0) {
+                if (lookup.contains(initial)) {
                     lookup[initial] = "";
                     errors.push_back(std::string("short option '") + initial + "' is ambiguous");
                     return false;
@@ -572,7 +573,7 @@ class parser
                     set_option(name, val);
                 } else {
                     std::string name(argv[i] + 2);
-                    if (options.count(name) == 0) {
+                    if (!options.contains(name)) {
                         errors.push_back("undefined option: --" + name);
                         continue;
                     }
@@ -595,7 +596,7 @@ class parser
                 char last = argv[i][1];
                 for (int j = 2; argv[i][j]; j++) {
                     last = argv[i][j];
-                    if (lookup.count(argv[i][j - 1]) == 0) {
+                    if (!lookup.contains(argv[i][j - 1])) {
                         errors.push_back(std::string("undefined short option: -") + argv[i][j - 1]);
                         continue;
                     }
@@ -606,7 +607,7 @@ class parser
                     set_option(lookup[argv[i][j - 1]]);
                 }
 
-                if (lookup.count(last) == 0) {
+                if (!lookup.contains(last)) {
                     errors.push_back(std::string("undefined short option: -") + last);
                     continue;
                 }
@@ -635,49 +636,49 @@ class parser
         return errors.empty();
     }
 
-    ///@brief
+    /// @brief
     ///
-    ///@param arg
+    /// @param arg
     void parse_check(const std::string &arg)
     {
-        if (!options.count("help")) {
+        if (!options.contains("help")) {
             add("help", '?', "print this message");
         }
         check(0, parse(arg));
     }
 
-    ///@brief
+    /// @brief
     ///
-    ///@param args
+    /// @param args
     void parse_check(const std::vector<std::string> &args)
     {
-        if (!options.count("help")) {
+        if (!options.contains("help")) {
             add("help", '?', "print this message");
         }
         check(args.size(), parse(args));
     }
 
-    ///@brief 检查解析器设置是否正确
+    /// @brief 检查解析器设置是否正确
     ///
-    ///@param argc 参数个数
-    ///@param argv
+    /// @param argc 参数个数
+    /// @param argv
     void parse_check(int argc, char *argv[])
     {
         // 如果不存在help选项自己创建一个
-        if (!options.count("help")) {
+        if (!options.contains("help")) {
             add("help", 'h', "print this message");
         }
         check(argc, parse(argc, argv));
     }
 
-    ///@brief 错误信息
+    /// @brief 错误信息
     ///
-    ///@return std::string
+    /// @return std::string
     std::string error() const { return !errors.empty() ? errors[0] : ""; }
 
-    ///@brief
+    /// @brief
     ///
-    ///@return std::string
+    /// @return std::string
     std::string error_full() const
     {
         std::ostringstream oss;
@@ -687,9 +688,9 @@ class parser
         return oss.str();
     }
 
-    ///@brief 帮助文档
+    /// @brief 帮助文档
     ///
-    ///@return std::string
+    /// @return std::string
     std::string usage() const
     {
         std::ostringstream oss;
@@ -724,10 +725,10 @@ class parser
     }
 
   private:
-    ///@brief
+    /// @brief
     ///
-    ///@param argc
-    ///@param ok
+    /// @param argc
+    /// @param ok
     void check(int argc, bool ok)
     {
         if ((argc == 1 && !ok) || exist("help")) {
@@ -741,12 +742,12 @@ class parser
         }
     }
 
-    ///@brief Set the option object
+    /// @brief Set the option object
     ///
-    ///@param name
+    /// @param name
     void set_option(const std::string &name)
     {
-        if (options.count(name) == 0) {
+        if (!options.contains(name)) {
             errors.push_back("undefined option: --" + name);
             return;
         }
@@ -756,13 +757,13 @@ class parser
         }
     }
 
-    ///@brief Set the option object
+    /// @brief Set the option object
     ///
-    ///@param name
-    ///@param value
+    /// @param name
+    /// @param value
     void set_option(const std::string &name, const std::string &value)
     {
-        if (options.count(name) == 0) {
+        if (!options.contains(name)) {
             errors.push_back("undefined option: --" + name);
             return;
         }
@@ -772,16 +773,16 @@ class parser
         }
     }
 
-    ///@brief 选项基类
+    /// @brief 选项基类
     class option_base
     {
       public:
         virtual ~option_base() = default;
 
-        ///@brief 是否存在参数
+        /// @brief 是否存在参数
         ///
-        ///@return true 存在参数
-        ///@return false 不存在参数
+        /// @return true 存在参数
+        /// @return false 不存在参数
         virtual bool has_value() const = 0;
         virtual bool set() = 0;
         virtual bool set(const std::string &value) = 0;
@@ -795,15 +796,15 @@ class parser
         virtual std::string short_description() const = 0;
     };
 
-    ///@brief 无参数选项
+    /// @brief 无参数选项
     class option_without_value : public option_base
     {
       public:
-        ///@brief 无参数选项
+        /// @brief 无参数选项
         ///
-        ///@param name 选项名
-        ///@param short_name 选项名缩写
-        ///@param desc 描述
+        /// @param name 选项名
+        /// @param short_name 选项名缩写
+        /// @param desc 描述
         option_without_value(std::string name, char short_name, std::string desc)
             : nam(std::move(name)), snam(short_name), desc(std::move(desc))
         {
@@ -841,20 +842,20 @@ class parser
         bool has{};
     };
 
-    ///@brief 有参数选项
+    /// @brief 有参数选项
     ///
-    ///@tparam T 参数类型
+    /// @tparam T 参数类型
     template <class T>
     class option_with_value : public option_base
     {
       public:
-        ///@brief 有参数选项
+        /// @brief 有参数选项
         ///
-        ///@param name 选项名
-        ///@param short_name 选项名缩写
-        ///@param need 必填项？
-        ///@param def 默认值
-        ///@param desc 描述
+        /// @param name 选项名
+        /// @param short_name 选项名缩写
+        /// @param need 必填项？
+        /// @param def 默认值
+        /// @param desc 描述
         option_with_value(std::string name, char short_name, bool need, const T &def,
                           const std::string &desc)
             : nam(std::move(name)), snam(short_name), need(need), def(def), actual(def)
@@ -916,22 +917,22 @@ class parser
         T actual;
     };
 
-    ///@brief 有参数并且限制范围的选项
+    /// @brief 有参数并且限制范围的选项
     ///
-    ///@tparam T 参数类型
-    ///@tparam F oneof
+    /// @tparam T 参数类型
+    /// @tparam F oneof
     template <class T, class F>
     class option_with_value_with_reader : public option_with_value<T>
     {
       public:
-        ///@brief 有参数并且限制范围的选项
+        /// @brief 有参数并且限制范围的选项
         ///
-        ///@param name 选项名
-        ///@param short_name 选项名缩写
-        ///@param need 必填项？
-        ///@param def 默认值
-        ///@param desc 描述
-        ///@param reader 范围限制
+        /// @param name 选项名
+        /// @param short_name 选项名缩写
+        /// @param need 必填项？
+        /// @param def 默认值
+        /// @param desc 描述
+        /// @param reader 范围限制
         option_with_value_with_reader(const std::string &name, char short_name, bool need,
                                       const T def, const std::string &desc, F reader)
             : option_with_value<T>(name, short_name, need, def, desc), reader(reader)
@@ -944,18 +945,18 @@ class parser
         F reader;
     };
 
-    ///@brief 存储所有选项的图
+    /// @brief 存储所有选项的图
     std::map<std::string, option_base *> options;
-    ///@brief 将options中的option_base *排序存储
+    /// @brief 将options中的option_base *排序存储
     std::vector<option_base *> ordered;
-    ///@brief 脚注
+    /// @brief 脚注
     std::string ftr;
 
-    ///@brief 用于展示的可执行文件名
+    /// @brief 用于展示的可执行文件名
     std::string prog_name;
     std::vector<std::string> others;
 
-    ///@brief 错误信息
+    /// @brief 错误信息
     std::vector<std::string> errors;
 };
 
