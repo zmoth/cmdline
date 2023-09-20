@@ -366,7 +366,7 @@ class parser
     void add(const std::string &name, char short_name = 0, const std::string &desc = "")
     {
         // 判断选项是否已经存在
-        if (options.contains(name)) {
+        if (options.count(name)) {
             throw cmdline_error("multiple definition: " + name);
         }
         options[name] = new option_without_value(name, short_name, desc);
@@ -402,7 +402,7 @@ class parser
     void add(const std::string &name, char short_name = 0, const std::string &desc = "",
              bool need = true, const T def = T(), F reader = F())
     {
-        if (options.contains(name)) {
+        if (options.count(name)) {
             throw cmdline_error("multiple definition: " + name);
         }
         // 将选项添加到map中
@@ -429,7 +429,7 @@ class parser
     /// @return false 不存在
     bool exist(const std::string &name) const
     {
-        if (!options.contains(name)) {
+        if (!options.count(name)) {
             throw cmdline_error("there is no flag: --" + name);
         }
         return options.find(name)->second->has_set();
@@ -443,7 +443,7 @@ class parser
     template <class T>
     const T &get(const std::string &name) const
     {
-        if (!options.contains(name)) {
+        if (!options.count(name)) {
             throw cmdline_error("there is no flag: --" + name);
         }
         const option_with_value<T> *p =
@@ -554,7 +554,7 @@ class parser
 
             char initial = option.second->short_name();
             if (initial) {
-                if (lookup.contains(initial)) {
+                if (lookup.count(initial)) {
                     lookup[initial] = "";
                     errors.push_back(std::string("short option '") + initial + "' is ambiguous");
                     return false;
@@ -573,7 +573,7 @@ class parser
                     set_option(name, val);
                 } else {
                     std::string name(argv[i] + 2);
-                    if (!options.contains(name)) {
+                    if (!options.count(name)) {
                         errors.push_back("undefined option: --" + name);
                         continue;
                     }
@@ -596,7 +596,7 @@ class parser
                 char last = argv[i][1];
                 for (int j = 2; argv[i][j]; j++) {
                     last = argv[i][j];
-                    if (!lookup.contains(argv[i][j - 1])) {
+                    if (!lookup.count(argv[i][j - 1])) {
                         errors.push_back(std::string("undefined short option: -") + argv[i][j - 1]);
                         continue;
                     }
@@ -607,7 +607,7 @@ class parser
                     set_option(lookup[argv[i][j - 1]]);
                 }
 
-                if (!lookup.contains(last)) {
+                if (!lookup.count(last)) {
                     errors.push_back(std::string("undefined short option: -") + last);
                     continue;
                 }
@@ -641,7 +641,7 @@ class parser
     /// @param arg
     void parse_check(const std::string &arg)
     {
-        if (!options.contains("help")) {
+        if (!options.count("help")) {
             add("help", '?', "print this message");
         }
         check(0, parse(arg));
@@ -652,7 +652,7 @@ class parser
     /// @param args
     void parse_check(const std::vector<std::string> &args)
     {
-        if (!options.contains("help")) {
+        if (!options.count("help")) {
             add("help", '?', "print this message");
         }
         check(args.size(), parse(args));
@@ -665,7 +665,7 @@ class parser
     void parse_check(int argc, char *argv[])
     {
         // 如果不存在help选项自己创建一个
-        if (!options.contains("help")) {
+        if (!options.count("help")) {
             add("help", 'h', "print this message");
         }
         check(argc, parse(argc, argv));
@@ -747,7 +747,7 @@ class parser
     /// @param name
     void set_option(const std::string &name)
     {
-        if (!options.contains(name)) {
+        if (!options.count(name)) {
             errors.push_back("undefined option: --" + name);
             return;
         }
@@ -763,7 +763,7 @@ class parser
     /// @param value
     void set_option(const std::string &name, const std::string &value)
     {
-        if (!options.contains(name)) {
+        if (!options.count(name)) {
             errors.push_back("undefined option: --" + name);
             return;
         }
