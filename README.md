@@ -30,7 +30,7 @@ int main(int argc, char \*argv[])
     // 第3个参数是描述
     // 第4个参数是强制标识，如果是true表示这个参数必须被填入，默认是false
     // 第6个参数是默认值
-    a.add<string>("host", 'h', "host name", true, "");
+    a.add<string>("host", 'o', "host name", true, "");
 
     // 第6个参数是额外的约束
     // 这里表示，port 参数内容需要被限制在1～65535之间
@@ -67,23 +67,23 @@ int main(int argc, char \*argv[])
 $ ./test
 usage: ./test --host=string [options] ...
 options:
--h, --host host name (string)
+-o, --host host name (string)
 -p, --port port number (int [=80])
 -t, --type protocol type (string [=http])
 --gzip gzip when transfer
--?, --help print this message
+-h, --help print this message
 
 ```
 
 ```bash
-$ ./test -?
+$ ./test -h
 usage: ./test --host=string [options] ...
 options:
--h, --host host name (string)
+-o, --host host name (string)
 -p, --port port number (int [=80])
 -t, --type protocol type (string [=http])
 --gzip gzip when transfer
--?, --help print this message
+-h, --help print this message
 ```
 
 ```bash
@@ -101,11 +101,11 @@ $ ./test --host=github.com -t ttp
 option value is invalid: --type=ttp
 usage: ./test --host=string [options] ...
 options:
--h, --host host name (string)
+-o, --host host name (string)
 -p, --port port number (int [=80])
 -t, --type protocol type (string [=http])
 --gzip gzip when transfer
--?, --help print this message
+-h, --help print this message
 ```
 
 ```bash
@@ -119,11 +119,11 @@ $ ./test --host=github.com -p 100000
 option value is invalid: --port=100000
 usage: ./test --host=string [options] ...
 options:
--h, --host host name (string)
+-o, --host host name (string)
 -p, --port port number (int [=80])
 -t, --type protocol type (string [=http])
 --gzip gzip when transfer
--?, --help print this message
+-h, --help print this message
 ```
 
 ```bash
@@ -168,7 +168,7 @@ options:
 -p, --port port number (int [=80])
 -t, --type protocol type (string [=http])
 --gzip gzip when transfer
--?, --help print this message
+-h, --help print this message
 ```
 
 - 程序名称
