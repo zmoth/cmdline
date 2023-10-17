@@ -21,40 +21,40 @@
 
 int main(int argc, char \*argv[])
 {
-// create a parser
-cmdline::parser a;
+    // 创建一个解析器
+    cmdline::parser a;
 
-    // add specified type of variable.
-    // 1st argument is long name
-    // 2nd argument is short name (no short name if '\0' specified)
-    // 3rd argument is description
-    // 4th argument is mandatory (optional. default is false)
-    // 5th argument is default value  (optional. it used when mandatory is false)
+    // 添加指定类型的变量。
+    // 第1个参数是全称
+    // 第2个参数是缩写，只有一个字符且不能是'\0'
+    // 第3个参数是描述
+    // 第4个参数是强制标识，如果是true表示这个参数必须被填入，默认是false
+    // 第6个参数是默认值
     a.add<string>("host", 'h', "host name", true, "");
 
-    // 6th argument is extra constraint.
-    // Here, port number must be 1 to 65535 by cmdline::range().
+    // 第6个参数是额外的约束
+    // 这里表示，port 参数内容需要被限制在1～65535之间
     a.add<int>("port", 'p', "port number", false, 80, cmdline::range(1, 65535));
 
-    // cmdline::oneof() can restrict options.
+    // cmdline::oneof() 函数也可以约束，使用户只能选择则其一
     a.add<string>("type", 't', "protocol type", false, "http", cmdline::oneof<string>("http", "https", "ssh", "ftp"));
 
-    // Boolean flags also can be defined.
-    // Call add method without a type parameter.
+    // 也可以定义布尔参数，只要参数里包含就可以
+    // 调用不带类型参数的add方法
     a.add("gzip", '\0', "gzip when transfer");
 
-    // Run parser.
-    // It returns only if command line arguments are valid.
-    // If arguments are invalid, a parser output error msgs then exit program.
-    // If help flag ('--help' or '-?') is specified, a parser output usage message then exit program.
+    // 运行解析器
+    // 它仅在命令行参数有效时返回。
+    // 如果参数无效，解析器将输出错误消息，然后退出程序。
+    // 如果指定了帮助标志('——help'或'-h')，解析器将输出使用信息，然后退出程序。
     a.parse_check(argc, argv);
 
-    // use flag values
+    // 获取参数
     cout << a.get<string>("type") << "://"
          << a.get<string>("host") << ":"
          << a.get<int>("port") << endl;
 
-    // boolean flags are referred by calling exist() method.
+    // 布尔参数可以用 exist() 获取
     if (a.exist("gzip")) cout << "gzip" << endl;
 
 }
@@ -134,11 +134,11 @@ gzip
 
 ### 其他用法
 
-- rest of arguments
+- 其余参数
 
-Rest of arguments are referenced by rest() method.
-It returns vector of string.
-Usualy, they are used to specify filenames, and so on.
+其余参数由 `rest()` 方法引用。
+它返回 string 类型的 vector。
+通常，它们用于指定文件名等。
 
 ```cpp
 for (int i = 0; i < a.rest().size(); i++) {
@@ -146,19 +146,19 @@ for (int i = 0; i < a.rest().size(); i++) {
 }
 ```
 
-- footer
+- 脚注
 
 ```cpp
-footer() // method is add a footer text of usage.
+footer() // 该函数可以添加脚注
 ```
 
 ```cpp
 ...
 a.footer("filename ...");
-...
+...·
 ```
 
-Result is:
+结果:
 
 ```bash
 $ ./test
@@ -171,20 +171,16 @@ options:
 -?, --help print this message
 ```
 
-- program name
+- 程序名称
 
-A parser shows program name to usage message.
-Default program name is determin by argv[0].
-set_program_name() method can set any string to program name.
+解析器在打印使用方法时会打印程序名称。默认的程序名称是 argv[0]。`set_program_name()`函数可以重新设置程序名称。
 
 ## 手动处理
 
-parse_check() method parses command line arguments and
-check error and help flag.
+`parse_check()` 方法能够解析命令行参数、检查错误、打印帮助信息。
 
-You can do this process mannually.
-bool parse() method parses command line arguments then
-returns if they are valid.
-You should check the result, and do what you want yourself.
+您可以手动执行此过程。
+`bool parse()` 方法能够解析命令行参数，如果无效则返回 false。
+之后你应该检查一下结果，然后自己做你想做的。
 
-(For more information, you may read test2.cpp.)
+(更多的内容，您可以参考 `test2.cpp`)
