@@ -25,7 +25,8 @@ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
 
-#include <cmdline/cmdline>
+#include <cmdline/cmdline.h>
+
 #include <iostream>
 
 int main(int argc, char *argv[])
@@ -35,26 +36,15 @@ int main(int argc, char *argv[])
     a.add<int>("port", 'p', "port number", false, 80, cmdline::range(1, 65535));
     a.add<std::string>("type", 't', "protocol type", false, "http",
                        cmdline::oneof<std::string>("http", "https", "ssh", "ftp"));
-    a.add("help", 0, "print this message");
-    a.footer("filename ...");
-    a.set_program_name("test");
+    a.add("gzip", '\0', "gzip when transfer");
 
-    bool ok = a.parse(argc, argv);
+    a.parse_check(argc, argv);
 
-    if (argc == 1 || a.exist("help")) {
-        std::cerr << a.usage();
-        return 0;
-    }
+    std::cout << a.get<std::string>("type") << "://" << a.get<std::string>("host") << ":" << a.get<int>("port")
+              << std::endl;
 
-    if (!ok) {
-        std::cerr << a.error() << std::endl << a.usage();
-        return 0;
-    }
-
-    std::cout << a.get<std::string>("host") << ":" << a.get<int>("port") << std::endl;
-
-    for (const auto &i : a.rest()) {
-        std::cout << "- " << i << std::endl;
+    if (a.exist("gzip")) {
+        std::cout << "gzip" << std::endl;
     }
 
     return 0;
