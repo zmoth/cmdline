@@ -1,23 +1,22 @@
-# cmdline: A simple command line parser for C++
+# cmdline: 一个 C++ 写的简单的命令行解析器
 
-## About
+## 关于
 
-This is a simple command line parser for C++.
+一个 C++ 写的简单的命令行解析器。
 
-- Easy to use
-- Only one header file
-- Automatic type check
+- 简单易用
+- 只有一个头文件
+- 自动类型检查
 
-## Sample
+## 案例
 
-Here show sample usages of cmdline.
+下面是简单的使用案例
 
-### Normal usage
+### 基本使用
 
-This is an example of simple usage.
+这是一个简单的使用案例
 
 ```cpp
-// include cmdline.h
 #include "cmdline.h"
 
 int main(int argc, char \*argv[])
@@ -61,7 +60,7 @@ cmdline::parser a;
 }
 ```
 
-Here are some execution results:
+一些运行结果:
 
 ```bash
 
@@ -133,7 +132,7 @@ http://github.com:80
 gzip
 ```
 
-### Extra Options
+### 其他用法
 
 - rest of arguments
 
@@ -178,7 +177,7 @@ A parser shows program name to usage message.
 Default program name is determin by argv[0].
 set_program_name() method can set any string to program name.
 
-## Process flags manually
+## 手动处理
 
 parse_check() method parses command line arguments and
 check error and help flag.
