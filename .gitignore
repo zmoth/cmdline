@@ -1,0 +1,17 @@
+/*[Bb]uild*/
+
+# clangd
+.cache
+
+# JetBrains
+.idea/
+
+# Visual Studio
+.vs/
+
+# Visual Studio Code
+.vscode/*
+!.vscode/launch.json
+
+# MacOS
+.DS_Store
