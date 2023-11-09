@@ -71,10 +71,10 @@ int main(int argc, char *argv[])
 
 ```bash
 $ ./simple
-usage: simple --host=string [options] ...     
+usage: simple --host=string [options] ...
 options:
       --host    host name (string)
-  -p, --port    port number (int [=80])       
+  -p, --port    port number (int [=80])
   -t, --type    protocol type (string [=http])
       --gzip    gzip when transfer
   -q, --quit    quit
@@ -85,10 +85,10 @@ $
 
 ```bash
 $ ./simple -h
-usage: simple --host=string [options] ...     
+usage: simple --host=string [options] ...
 options:
       --host    host name (string)
-  -p, --port    port number (int [=80])       
+  -p, --port    port number (int [=80])
   -t, --type    protocol type (string [=http])
       --gzip    gzip when transfer
   -q, --quit    quit
@@ -187,10 +187,10 @@ a.footer("filename ...");
 
 ```bash
 $ ./simple
-usage: simple --host=string [options] ... filename ...     
+usage: simple --host=string [options] ... filename ...
 options:
       --host    host name (string)
-  -p, --port    port number (int [=80])       
+  -p, --port    port number (int [=80])
   -t, --type    protocol type (string [=http])
       --gzip    gzip when transfer
   -q, --quit    quit

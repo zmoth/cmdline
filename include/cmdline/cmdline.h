@@ -853,7 +853,7 @@ class parser
             try {
                 _actual = read(value);
                 _has = true;
-            } catch (const std::exception &e) {
+            } catch (const std::exception & /*e*/) {
                 return false;
             }
             return true;
